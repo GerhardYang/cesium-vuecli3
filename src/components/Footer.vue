@@ -1,9 +1,12 @@
 <template>
   <div id="footer">
     <div id="states">
-      <span>经度：{{stateInfos.lng.toFixed(3)}}°</span>
-      <span>纬度：{{stateInfos.lat.toFixed(3)}}°</span>
-      <span>相机高度：{{stateInfos.height}}m</span>
+      <span>{{stateInfos.lng}}</span>
+      <span>{{stateInfos.lat}}</span>
+      <span>{{stateInfos.height}}</span>
+      <span>{{stateInfos.heading}}</span>
+      <span>{{stateInfos.roll}}</span>
+      <span>{{stateInfos.pitch}}</span>
     </div>
   </div>
 </template>
@@ -15,7 +18,10 @@ export default {
       stateInfos: {
         lng: null,
         lat: null,
-        height: null
+        height: null,
+        heading: null,
+        roll: null,
+        pitch: null
       }
     };
   },
@@ -24,11 +30,6 @@ export default {
     let viewer = this.$store.state.viewer;
     this.handleMOUSE_MOVE(stateInfos, viewer);
     this.handleWHEEL(stateInfos, viewer);
-    // 镜头移动事件
-    viewer.scene.camera.changed.addEventListener(function() {
-      console.log(viewer.scene.camera.position);
-      console.log(viewer.scene.camera.direction);
-    });
   },
   methods: {
     handleMOUSE_MOVE: function(stateInfos, viewer) {
@@ -41,18 +42,40 @@ export default {
           movement.endPosition,
           viewer.scene.globe.ellipsoid
         );
-        console.log(cartesian);
+        if (cartesian == undefined) {
+          return;
+        }
         //将笛卡尔坐标转换为地理坐标
         let cartographic = viewer.scene.globe.ellipsoid.cartesianToCartographic(
           cartesian
         );
         //将弧度转为度的十进制度表示
         stateInfos.lng = Cesium.Math.toDegrees(cartographic.longitude);
+        stateInfos.lng = `经度：${stateInfos.lng.toFixed(3)}°`;
         stateInfos.lat = Cesium.Math.toDegrees(cartographic.latitude);
+        stateInfos.lat = `纬度：${stateInfos.lat.toFixed(3)}°  `;
         //获取相机高度
         stateInfos.height = Math.ceil(
           viewer.camera.positionCartographic.height
         );
+        stateInfos.height =
+          stateInfos.height > 1000
+            ? `相机高度：${stateInfos.height / 1000}Km`
+            : `相机高度：${stateInfos.height}m`;
+
+        stateInfos.heading = viewer.camera.heading;
+        let headingAngle = (stateInfos.heading / (2 * Math.PI)) * 360;
+        stateInfos.heading = `方位角：
+        ${(headingAngle == 360 ? 0 : headingAngle).toFixed(2)}°`;
+
+        stateInfos.roll = viewer.camera.roll;
+        let rollAngle = (stateInfos.roll / (2 * Math.PI)) * 360;
+        stateInfos.roll = `翻滚角：
+        ${(rollAngle == 360 ? 0 : rollAngle).toFixed(2)}°`;
+
+        stateInfos.pitch = viewer.camera.pitch;
+        stateInfos.pitch = `俯仰角：
+        ${((stateInfos.pitch / (2 * Math.PI)) * 360).toFixed(2)}°`;
       }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     },
     handleWHEEL: function(stateInfos, viewer) {
@@ -62,6 +85,10 @@ export default {
           stateInfos.height = Math.ceil(
             viewer.camera.positionCartographic.height
           );
+          stateInfos.height =
+            stateInfos.height > 1000
+              ? `相机高度：${stateInfos.height / 1000}Km`
+              : `相机高度：${stateInfos.height}m`;
         },
         Cesium.ScreenSpaceEventType.WHEEL
       );
@@ -88,5 +115,6 @@ export default {
 }
 #footer > #states > span {
   line-height: 40px;
+  padding-right: 5px;
 }
 </style>
