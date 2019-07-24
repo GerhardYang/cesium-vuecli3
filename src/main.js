@@ -3,7 +3,10 @@ import App from './App.vue'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import L from 'leaflet';
+import '@supermap/iclient-leaflet';
 
+Vue.use(L);
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 
