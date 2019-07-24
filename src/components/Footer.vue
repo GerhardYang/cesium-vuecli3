@@ -51,9 +51,15 @@ export default {
         );
         //将弧度转为度的十进制度表示
         stateInfos.lng = Cesium.Math.toDegrees(cartographic.longitude);
-        stateInfos.lng = `经度：${stateInfos.lng.toFixed(3)}°`;
+        stateInfos.lng =
+          stateInfos.lng > 0
+            ? `经度：${stateInfos.lng.toFixed(3)}°E`
+            : `经度：${-stateInfos.lng.toFixed(3)}°W`;
         stateInfos.lat = Cesium.Math.toDegrees(cartographic.latitude);
-        stateInfos.lat = `纬度：${stateInfos.lat.toFixed(3)}°  `;
+        stateInfos.lat =
+          stateInfos.lat > 0
+            ? `纬度：${stateInfos.lat.toFixed(3)}°N`
+            : `纬度：${-stateInfos.lat.toFixed(3)}°S`;
         //获取相机高度
         stateInfos.height = Math.ceil(
           viewer.camera.positionCartographic.height
@@ -81,7 +87,7 @@ export default {
     handleWHEEL: function(stateInfos, viewer) {
       //设置鼠标滚动事件的处理函数，这里负责监听高度值变化
       new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas).setInputAction(
-        function(wheelment) {
+        function() {
           stateInfos.height = Math.ceil(
             viewer.camera.positionCartographic.height
           );
@@ -106,8 +112,8 @@ export default {
   width: 100%;
   background: #040404;
   color: #fff;
-  opacity: 0.8;
-  border-top: 1px solid #fff;
+  opacity: 0.6;
+  /* border-top: 1px solid #fff; */
 }
 #footer > #states {
   float: right;
