@@ -1,5 +1,8 @@
 <template>
   <div id="footer">
+    <div id="copyright">
+      <span>@GerhardYang</span>
+    </div>
     <div id="states">
       <span>{{stateInfos.lng}}</span>
       <span>{{stateInfos.lat}}</span>
@@ -115,12 +118,21 @@ export default {
   opacity: 0.6;
   /* border-top: 1px solid #fff; */
 }
+#footer > #copyright {
+  float: left;
+  width: 30%;
+}
+#footer > #copyright > span {
+  line-height: 40px;
+  font-weight: 800;
+  padding-left: 10px;
+}
 #footer > #states {
   float: right;
-  padding-right: 10px;
+  /* width: 70%; */
 }
 #footer > #states > span {
   line-height: 40px;
-  padding-right: 5px;
+  padding-right: 10px;
 }
 </style>

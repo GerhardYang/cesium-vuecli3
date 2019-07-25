@@ -58,6 +58,7 @@ export default {
       });
       viewer.imageryLayers.addImageryProvider(google);
       viewer.imageryLayers.addImageryProvider(tdtcia);
+      viewer.scene._creditContainer.style.display = "none";
 
       this.$store.commit("changeViewer", viewer);
     }
