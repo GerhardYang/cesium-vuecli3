@@ -50,16 +50,14 @@ export default {
         requestWaterMask: true,
         requestVertexNormals: true
       });
-      let viewer = new Cesium.Viewer("container", {
-        //创建地形服务提供者的实例，url为SuperMap iServer发布的TIN地形服务
-        terrainProvider: SKT,
-        //添加影像服务
-        imageryProvider: google
-      });
+      let viewer = new Cesium.Viewer("container");
+
+      viewer.terrainProvider = SKT;
+
       viewer.imageryLayers.addImageryProvider(google);
       viewer.imageryLayers.addImageryProvider(tdtcia);
-      viewer.scene._creditContainer.style.display = "none";
 
+      viewer.scene._creditContainer.style.display = "none";
       this.$store.commit("changeViewer", viewer);
     }
   }

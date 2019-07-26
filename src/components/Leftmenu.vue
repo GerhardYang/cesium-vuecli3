@@ -72,7 +72,7 @@ export default {
 </script>
 <style>
 .el-menu-vertical-left {
-  margin-top: 30px !important;
+  margin-top: 130px !important;
   border-right: none !important;
 }
 </style>

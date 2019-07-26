@@ -21,10 +21,10 @@
       <el-menu-item>
         <!-- <i class="el-icon-s-unfold"></i> -->
       </el-menu-item>
-      <el-menu-item index="1">处理中心</el-menu-item>
+      <el-menu-item index="1">中国区划</el-menu-item>
       <el-submenu index="2">
-        <template slot="title">我的工作台</template>
-        <el-menu-item index="2-1">选项1</el-menu-item>
+        <template slot="title">三维模型</template>
+        <el-menu-item index="2-1">鸟巢</el-menu-item>
         <el-menu-item index="2-2">选项2</el-menu-item>
         <el-menu-item index="2-3">选项3</el-menu-item>
         <el-submenu index="2-4">
@@ -53,9 +53,11 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
       let viewer = this.$store.state.viewer;
+      let widget = viewer.cesiumWidget;
+      let scene = viewer.scene;
 
       if (key == 1) {
-        var promise = Cesium.GeoJsonDataSource.load(
+        let promise = Cesium.GeoJsonDataSource.load(
           "http://support.supermap.com.cn:8090/iserver/services/data-world/rest/data/datasources/World/datasets/Countries/features/247.geojson",
           {
             clampToGround: true
@@ -64,38 +66,55 @@ export default {
         promise.then(function(dataSource) {
           viewer.dataSources.add(dataSource);
           let entities = dataSource.entities.values;
-          for (var i = 0; i < entities.length; i++) {
-            var entity = entities[i];
-            var name = entity.name;
+          for (let i = 0; i < entities.length; i++) {
+            let entity = entities[i];
+            let name = entity.name;
 
-            entity.polygon.material = Cesium.Color.fromRandom({
-              red: 1.0,
-              green: 0,
-              alpha: 0.7
-            });
-            entity.polygon.outline = false;
+            // entity.polygon.fill = false;
+            entity.polygon.outline = true;
+            entity.polygon.outlineColor = Cesium.Color.RED;
+            entity.polygon.outlineWidth = 300;
           }
         });
         viewer.flyTo(promise);
       }
-    },
-    query: function(sqlParam, url) {
-      let viewer = this.$store.state.viewer;
-      L.supermap
-        .featureService(url)
-        .getFeaturesBySQL(sqlParam, function(serviceResult) {
-          let resultgeojson = serviceResult.result.features;
-          console.log(resultgeojson);
-          let viewPosition = viewer.dataSources.add(
-            Cesium.GeoJsonDataSource.load("../../Apps/china.geojson", {
-              stroke: Cesium.Color.BLACK,
-              fill: Cesium.Color.RED,
-              strokeWidth: 3,
-              markerSymbol: "?"
-            })
+      if (key == "2-1") {
+        try {
+          let niaochao = scene.open(
+            "http://www.supermapol.com/realspace/services/3D-niaocao_water/rest/realspace",
+            {
+              clampToGround: true
+            }
           );
-          viewer.flyTo(viewPosition);
-        });
+          Cesium.when(
+            niaochao,
+            function(layers) {
+              scene.camera.setView({
+                destination: new Cesium.Cartesian3.fromDegrees(
+                  116.38621009526075,
+                  39.98468016277832,
+                  313.2286367219722
+                ),
+                orientation: {
+                  heading: 6.116051,
+                  pitch: -0.275007,
+                  roll: 6.283185
+                }
+              });
+            },
+            function() {
+              let title =
+                "加载SCP失败，请检查网络连接状态或者url地址是否正确？";
+              widget.showErrorPanel(title, undefined, e);
+            }
+          );
+        } catch (e) {
+          if (widget._showRenderLoopErrors) {
+            let title = "渲染时发生错误，已停止渲染。";
+            widget.showErrorPanel(title, undefined, e);
+          }
+        }
+      }
     }
   }
 };
