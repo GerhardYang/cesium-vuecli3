@@ -125,7 +125,7 @@ export default {
   mounted() {}
 };
 </script>
-<style lang="stylus" scoped>
+<style>
 .name {
   line-height: 20px;
 }
