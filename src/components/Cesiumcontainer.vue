@@ -4,7 +4,7 @@
  * @Autor: GerhardYang
  * @Date: 2019-08-29 20:07:55
  * @LastEditors: GerhardYang
- * @LastEditTime: 2019-08-29 20:19:14
+ * @LastEditTime: 2019-08-29 22:00:18
  -->
 <template>
   <div>
@@ -28,11 +28,12 @@ export default {
       //加载影像注记
       const tdtcia = new Cesium.WebMapTileServiceImageryProvider({
         url:
-          "http://t0.tianditu.gov.cn/cia_w/wmts?tk=c3eec6ca025f3324e22a47545b25c6c8",
+          "http://t7.tianditu.gov.cn/cia_w/wmts?tk=10e4a33383d86f868e6c5748e8f6cbb5",
         layer: "cia",
         style: "default",
         tileMatrixSetID: "w",
         format: "tiles",
+        subdomains: ["t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
         maximumLevel: 18
       });
 

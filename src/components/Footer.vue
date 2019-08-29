@@ -1,7 +1,15 @@
+<!--
+ * @Description: 
+ * @Version: 1.0
+ * @Autor: GerhardYang
+ * @Date: 2019-08-29 20:07:55
+ * @LastEditors: GerhardYang
+ * @LastEditTime: 2019-08-29 20:30:47
+ -->
 <template>
   <div id="footer">
     <div id="copyright">
-      <span>@GerhardYang</span>
+      <span>©GerhardYang@SuperMap</span>
     </div>
     <div id="states">
       <span>{{stateInfos.lng}}</span>

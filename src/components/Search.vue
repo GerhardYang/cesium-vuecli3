@@ -4,7 +4,7 @@
  * @Autor: GerhardYang
  * @Date: 2019-08-29 20:07:55
  * @LastEditors: GerhardYang
- * @LastEditTime: 2019-08-29 20:19:57
+ * @LastEditTime: 2019-08-29 21:17:05
  -->
 <template>
   <div id="search">
@@ -45,6 +45,7 @@ export default {
           .get(url, {
             params: {
               keywords: queryString,
+              city: "长沙",
               key: "29027b0410e8cd66c1797081f0443deb"
             }
           })
@@ -81,6 +82,7 @@ export default {
         parseFloat(gcj02lonlat[0]),
         parseFloat(gcj02lonlat[1])
       );
+      console.log(wgs84lonlat);
 
       //x为longtitude,y为latitude,terrain是地形privider
       // let positions = [
@@ -101,7 +103,7 @@ export default {
         position: Cesium.Cartesian3.fromDegrees(
           wgs84lonlat[0],
           wgs84lonlat[1],
-          12
+          82
         ),
         point: {
           color: Cesium.Color.RED, //点位颜色

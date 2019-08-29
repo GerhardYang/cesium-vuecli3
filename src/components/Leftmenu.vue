@@ -1,9 +1,13 @@
+<!--
+ * @Description: 
+ * @Version: 1.0
+ * @Autor: GerhardYang
+ * @Date: 2019-08-29 20:07:55
+ * @LastEditors: GerhardYang
+ * @LastEditTime: 2019-08-29 23:47:58
+ -->
 <template>
   <div>
-    <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-      <el-radio-button :label="false">展开</el-radio-button>
-      <el-radio-button :label="true">收起</el-radio-button>
-    </el-radio-group>-->
     <el-menu
       default-active="2"
       class="el-menu-vertical-left"
@@ -15,42 +19,28 @@
       @select="handelSelect"
       :collapse="isCollapse"
     >
-      <el-submenu index="1">
-        <template slot="title">
-          <i class="el-icon-location"></i>
-          <span slot="title">区划定位</span>
-        </template>
-        <el-menu-item-group>
-          <el-submenu index="1-1">
-            <span slot="title">湖北省</span>
-            <el-menu-item index="1-1-1">武汉市</el-menu-item>
-          </el-submenu>
-          <el-submenu index="1-2">
-            <span slot="title">湖南省</span>
-            <el-menu-item index="1-2-1">长沙市</el-menu-item>
-          </el-submenu>
-        </el-menu-item-group>
-        <el-submenu index="1-3">
-          <span slot="title">江西省</span>
-          <el-menu-item index="1-3-1">南昌市</el-menu-item>
-        </el-submenu>
-      </el-submenu>
+      <el-menu-item index="1">
+        <i class="el-icon-delete"></i>
+        <span slot="title">清除</span>
+      </el-menu-item>
       <el-menu-item index="2">
-        <i class="el-icon-menu"></i>
-        <span slot="title">导航二</span>
+        <i class="el-icon-location"></i>
+        <span slot="title">定位</span>
       </el-menu-item>
       <el-menu-item index="3">
-        <i class="el-icon-document"></i>
-        <span slot="title">导航三</span>
+        <i class="el-icon-info"></i>
+        <span slot="title">详情</span>
       </el-menu-item>
       <el-menu-item index="4">
         <i class="el-icon-setting"></i>
-        <span slot="title">导航四</span>
+        <span slot="title">设置</span>
       </el-menu-item>
     </el-menu>
   </div>
 </template>
 <script>
+import Convertcoordinates from "../assets/js/Convertcoordinates";
+import path from "../assets/js/path";
 export default {
   data() {
     return {
@@ -66,6 +56,61 @@ export default {
     },
     handelSelect(key, keyPath) {
       console.log(key, keyPath);
+      if ((key = 2)) {
+        let viewer = this.$store.state.viewer;
+
+        for (let index = 0; index < path.length; index++) {
+          let wgs84lonlat = Convertcoordinates.gcj02towgs84(
+            parseFloat(path[index][0]),
+            parseFloat(path[index][1])
+          );
+
+          if (path[index] && path[index + 1]) {
+            let wgs84lonlat2 = Convertcoordinates.gcj02towgs84(
+              parseFloat(path[index + 1][0]),
+              parseFloat(path[index + 1][1])
+            );
+            console.log(index);
+            // console.log(wgs84lonlat2);
+            let randomHeight = 50.0 + Math.random() * 50;
+            viewer.entities.add({
+              name: "Blue extruded corridor with beveled corners and outline",
+              corridor: {
+                positions: Cesium.Cartesian3.fromDegreesArray([
+                  wgs84lonlat[0],
+                  wgs84lonlat[1],
+                  wgs84lonlat2[0],
+                  wgs84lonlat2[1]
+                ]),
+                height: 10,
+                extrudedHeight: randomHeight,
+                width: 10.0,
+                cornerType: Cesium.CornerType.BEVELED,
+                material: this.getColor(randomHeight),
+                outline: true,
+                outlineColor: Cesium.Color.WHITE
+              }
+            });
+          }
+        }
+
+        viewer.zoomTo(viewer.entities);
+      }
+    },
+    getColor: function(height) {
+      let color = null;
+      if (height >= 90) {
+        color = Cesium.Color.RED.withAlpha(0.5);
+      } else if (height >= 80) {
+        color = Cesium.Color.ORANGERED.withAlpha(0.5);
+      } else if (height >= 70) {
+        color = Cesium.Color.YELLOW.withAlpha(0.5);
+      } else if (height >= 60) {
+        color = Cesium.Color.GREENYELLOW.withAlpha(0.5);
+      } else if (height >= 50) {
+        color = Cesium.Color.GREEN.withAlpha(0.5);
+      }
+      return color;
     }
   }
 };
