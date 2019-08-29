@@ -1,3 +1,11 @@
+<!--
+ * @Description: 
+ * @Version: 1.0
+ * @Autor: GerhardYang
+ * @Date: 2019-08-29 20:07:55
+ * @LastEditors: GerhardYang
+ * @LastEditTime: 2019-08-29 20:19:14
+ -->
 <template>
   <div>
     <div id="container" />
@@ -52,7 +60,7 @@ export default {
       });
       let viewer = new Cesium.Viewer("container");
 
-      viewer.terrainProvider = SKT;
+      // viewer.terrainProvider = SKT;
 
       viewer.imageryLayers.addImageryProvider(google);
       viewer.imageryLayers.addImageryProvider(tdtcia);

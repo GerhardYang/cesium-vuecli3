@@ -1,3 +1,11 @@
+<!--
+ * @Description: 
+ * @Version: 1.0
+ * @Autor: GerhardYang
+ * @Date: 2019-08-29 20:07:55
+ * @LastEditors: GerhardYang
+ * @LastEditTime: 2019-08-29 20:19:57
+ -->
 <template>
   <div id="search">
     <el-autocomplete
@@ -75,51 +83,51 @@ export default {
       );
 
       //x为longtitude,y为latitude,terrain是地形privider
-      let positions = [
-        Cesium.Cartographic.fromDegrees(wgs84lonlat[0], wgs84lonlat[1])
-      ];
-      let promise = Cesium.sampleTerrainMostDetailed(
-        viewer.terrainProvider,
-        positions
-      );
-      Cesium.when(promise, updatedPositions => {
-        let terrainHeight = updatedPositions[0].height;
-        console.log(positions, terrainHeight);
+      // let positions = [
+      //   Cesium.Cartographic.fromDegrees(wgs84lonlat[0], wgs84lonlat[1])
+      // ];
+      // let promise = Cesium.sampleTerrainMostDetailed(
+      //   viewer.terrainProvider,
+      //   positions
+      // );
+      // Cesium.when(promise, updatedPositions => {
+      //   let terrainHeight = updatedPositions[0].height;
+      //   console.log(positions, terrainHeight);
 
-        if (this.entity != null) {
-          viewer.entities.remove(this.entity);
+      if (this.entity != null) {
+        viewer.entities.remove(this.entity);
+      }
+      this.entity = viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(
+          wgs84lonlat[0],
+          wgs84lonlat[1],
+          12
+        ),
+        point: {
+          color: Cesium.Color.RED, //点位颜色
+          pixelSize: 10 //像素点大小
+        },
+        label: {
+          text: item.name,
+          font: "14pt Source Han Sans CN", //字体样式
+          fillColor: Cesium.Color.BLACK, //字体颜色
+          backgroundColor: Cesium.Color.AQUA, //背景颜色
+          showBackground: true, //是否显示背景颜色
+          style: Cesium.LabelStyle.FILL, //label样式
+          outlineWidth: 2,
+          verticalOrigin: Cesium.VerticalOrigin.CENTER, //垂直位置
+          horizontalOrigin: Cesium.HorizontalOrigin.LEFT, //水平位置
+          pixelOffset: new Cesium.Cartesian2(10, 0) //偏移
         }
-        this.entity = viewer.entities.add({
-          position: Cesium.Cartesian3.fromDegrees(
-            wgs84lonlat[0],
-            wgs84lonlat[1],
-            terrainHeight + 12
-          ),
-          point: {
-            color: Cesium.Color.RED, //点位颜色
-            pixelSize: 10 //像素点大小
-          },
-          label: {
-            text: item.name,
-            font: "14pt Source Han Sans CN", //字体样式
-            fillColor: Cesium.Color.BLACK, //字体颜色
-            backgroundColor: Cesium.Color.AQUA, //背景颜色
-            showBackground: true, //是否显示背景颜色
-            style: Cesium.LabelStyle.FILL, //label样式
-            outlineWidth: 2,
-            verticalOrigin: Cesium.VerticalOrigin.CENTER, //垂直位置
-            horizontalOrigin: Cesium.HorizontalOrigin.LEFT, //水平位置
-            pixelOffset: new Cesium.Cartesian2(10, 0) //偏移
-          }
-        });
-        viewer.flyTo(this.entity, {
-          offset: {
-            heading: Cesium.Math.toRadians(0),
-            pitch: Cesium.Math.toRadians(-45),
-            range: 3000
-          }
-        }); //居中到该点
       });
+      viewer.flyTo(this.entity, {
+        offset: {
+          heading: Cesium.Math.toRadians(0),
+          pitch: Cesium.Math.toRadians(-45),
+          range: 3000
+        }
+      }); //居中到该点
+      //   });
     }
   },
   mounted() {}
