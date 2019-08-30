@@ -4,7 +4,7 @@
  * @Autor: GerhardYang
  * @Date: 2019-08-29 20:07:55
  * @LastEditors: GerhardYang
- * @LastEditTime: 2019-08-29 23:47:58
+ * @LastEditTime: 2019-08-30 09:29:53
  -->
 <template>
   <div>
@@ -25,13 +25,17 @@
       </el-menu-item>
       <el-menu-item index="2">
         <i class="el-icon-location"></i>
-        <span slot="title">定位</span>
+        <span slot="title">位置1</span>
       </el-menu-item>
       <el-menu-item index="3">
+        <i class="el-icon-location"></i>
+        <span slot="title">位置2</span>
+      </el-menu-item>
+      <el-menu-item index="4">
         <i class="el-icon-info"></i>
         <span slot="title">详情</span>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="5">
         <i class="el-icon-setting"></i>
         <span slot="title">设置</span>
       </el-menu-item>
@@ -41,6 +45,7 @@
 <script>
 import Convertcoordinates from "../assets/js/Convertcoordinates";
 import path from "../assets/js/path";
+import pathdsq from "../assets/js/pathdsq.js";
 export default {
   data() {
     return {
@@ -56,9 +61,8 @@ export default {
     },
     handelSelect(key, keyPath) {
       console.log(key, keyPath);
+      let viewer = this.$store.state.viewer;
       if ((key = 2)) {
-        let viewer = this.$store.state.viewer;
-
         for (let index = 0; index < path.length; index++) {
           let wgs84lonlat = Convertcoordinates.gcj02towgs84(
             parseFloat(path[index][0]),
@@ -70,7 +74,7 @@ export default {
               parseFloat(path[index + 1][0]),
               parseFloat(path[index + 1][1])
             );
-            console.log(index);
+            // console.log(index);
             // console.log(wgs84lonlat2);
             let randomHeight = 50.0 + Math.random() * 50;
             viewer.entities.add({
@@ -94,6 +98,36 @@ export default {
           }
         }
 
+        viewer.zoomTo(viewer.entities);
+      }
+      if ((key = 3)) {
+        for (let index = 0; index < pathdsq.length; index++) {
+          let wgs84lonlat = Convertcoordinates.gcj02towgs84(
+            parseFloat(pathdsq[index][0]),
+            parseFloat(pathdsq[index][1])
+          );
+
+          if (path[index]) {
+            let randomHeight = 50.0 + Math.random() * 50;
+
+            viewer.entities.add({
+              position: Cesium.Cartesian3.fromDegrees(
+                wgs84lonlat[0],
+                wgs84lonlat[1]
+              ),
+              ellipse: {
+                semiMinorAxis: 10.0,
+                semiMajorAxis: 10.0,
+                height: 0,
+                extrudedHeight: randomHeight,
+                outline: true,
+                outlineColor: Cesium.Color.WHITE,
+                outlineWidth: 1,
+                material: this.getColor(randomHeight)
+              }
+            });
+          }
+        }
         viewer.zoomTo(viewer.entities);
       }
     },
